@@ -1,0 +1,23 @@
+{
+  "name": "web-searcher",
+  "description": "Web research specialist agent with search engines and Microsoft Learn documentation lookup",
+  "version": "1.0.2",
+  "author": {
+    "name": "Jason"
+  },
+  "repository": "https://github.com/jrob5756/claude-plugins",
+  "license": "MIT",
+  "keywords": ["web-search", "research", "documentation", "microsoft-learn"],
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'IMPORTANT: Always use the web-searcher subagent (via Task tool) for web research. Never call web-search or ms-learn MCP tools directly, even for medium to complex queries.'"
+          }
+        ]
+      }
+    ]
+  }
+}

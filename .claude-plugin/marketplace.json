@@ -1,0 +1,23 @@
+{
+  "name": "jason-tools",
+  "owner": {
+    "name": "Jason"
+  },
+  "metadata": {
+    "description": "Personal Claude Code plugins for web research and browser automation",
+    "version": "1.0.0",
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "web-searcher",
+      "source": "./plugins/web-searcher",
+      "description": "Web research agent with search and documentation MCP servers"
+    },
+    {
+      "name": "playwright",
+      "source": "./plugins/playwright",
+      "description": "Browser automation agent with Playwright MCP server"
+    }
+  ]
+}

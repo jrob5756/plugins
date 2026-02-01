@@ -1,0 +1,23 @@
+{
+  "name": "playwright",
+  "description": "Browser automation specialist agent using Playwright MCP for web interactions",
+  "version": "1.0.2",
+  "author": {
+    "name": "Jason"
+  },
+  "repository": "https://github.com/jrob5756/claude-plugins",
+  "license": "MIT",
+  "keywords": ["playwright", "browser-automation", "web-scraping", "testing"],
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'IMPORTANT: Always use the playwright subagent (via Task tool) for ALL browser automation. Never call playwright MCP tools directly, even for simple tasks.'"
+          }
+        ]
+      }
+    ]
+  }
+}
