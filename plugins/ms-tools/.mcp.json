@@ -16,11 +16,8 @@
     },
     "enghub": {
       "type": "stdio",
-      "command": "node",
-      "args": [
-        "/Users/jason/src/enghub-mcp-server-tools/dist/index.js"
-      ],
-      "env": {}
+      "command": "enghub-mcp",
+      "args": ["start"]
     }
   }
 }
