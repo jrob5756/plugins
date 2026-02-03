@@ -12,10 +12,6 @@
         "DEFAULT_SEARCH_ENGINE": "duckduckgo",
         "ALLOWED_SEARCH_ENGINES": "duckduckgo,bing,exa"
       }
-    },
-    "ms-learn": {
-      "type": "http",
-      "url": "https://learn.microsoft.com/api/mcp"
     }
   }
 }

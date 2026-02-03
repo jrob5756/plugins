@@ -1,0 +1,26 @@
+{
+  "mcpServers": {
+    "ms-learn": {
+      "type": "http",
+      "url": "https://learn.microsoft.com/api/mcp"
+    },
+    "work-iq": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@microsoft/workiq",
+        "mcp"
+      ],
+      "env": {}
+    },
+    "enghub": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "/Users/jason/src/enghub-mcp-server-tools/dist/index.js"
+      ],
+      "env": {}
+    }
+  }
+}

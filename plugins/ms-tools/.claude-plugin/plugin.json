@@ -1,0 +1,11 @@
+{
+  "name": "ms-tools",
+  "description": "Microsoft tools plugin with Learn documentation, WorkIQ, and EngHub integration",
+  "version": "1.0.0",
+  "author": {
+    "name": "Jason"
+  },
+  "repository": "https://github.com/jrob5756/claude-plugins",
+  "license": "MIT",
+  "keywords": ["microsoft", "azure", "ms-learn", "work-iq", "enghub", "documentation"]
+}

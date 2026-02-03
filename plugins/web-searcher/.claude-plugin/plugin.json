@@ -1,13 +1,13 @@
 {
   "name": "web-searcher",
-  "description": "Web research specialist agent with search engines and Microsoft Learn documentation lookup",
-  "version": "1.0.2",
+  "description": "Web research specialist agent with search engines for general web searches",
+  "version": "1.0.3",
   "author": {
     "name": "Jason"
   },
   "repository": "https://github.com/jrob5756/claude-plugins",
   "license": "MIT",
-  "keywords": ["web-search", "research", "documentation", "microsoft-learn"],
+  "keywords": ["web-search", "research", "documentation"],
   "hooks": {
     "SessionStart": [
       {
