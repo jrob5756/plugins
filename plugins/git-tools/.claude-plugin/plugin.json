@@ -1,0 +1,11 @@
+{
+  "name": "git-tools",
+  "description": "Git and GitHub CLI workflow automation with custom slash commands",
+  "version": "1.0.0",
+  "author": {
+    "name": "Jason"
+  },
+  "repository": "https://github.com/jrob5756/claude-plugins",
+  "license": "MIT",
+  "keywords": ["git", "github", "gh-cli", "workflow", "automation"]
+}
