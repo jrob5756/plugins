@@ -1,7 +1,7 @@
 {
   "name": "ms-tools",
   "description": "Microsoft tools plugin with Learn documentation, WorkIQ, and EngHub integration",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": {
     "name": "Jason"
   },
