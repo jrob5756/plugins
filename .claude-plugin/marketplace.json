@@ -4,20 +4,30 @@
     "name": "Jason"
   },
   "metadata": {
-    "description": "Personal Claude Code plugins for web research and browser automation",
-    "version": "1.0.0",
+    "description": "Personal Claude Code plugins for web research, browser automation, Microsoft tools, and git workflows",
+    "version": "1.1.0",
     "pluginRoot": "./plugins"
   },
   "plugins": [
     {
       "name": "web-searcher",
       "source": "./plugins/web-searcher",
-      "description": "Web research agent with search and documentation MCP servers"
+      "description": "Web research agent with search MCP servers"
     },
     {
       "name": "playwright",
       "source": "./plugins/playwright",
       "description": "Browser automation agent with Playwright MCP server"
+    },
+    {
+      "name": "ms-tools",
+      "source": "./plugins/ms-tools",
+      "description": "Microsoft tools with MS Learn, WorkIQ, and EngHub MCP servers"
+    },
+    {
+      "name": "git-tools",
+      "source": "./plugins/git-tools",
+      "description": "Git workflow commands and GitHub CLI reference skill"
     }
   ]
 }
