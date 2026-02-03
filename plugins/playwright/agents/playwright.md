@@ -65,3 +65,14 @@ You are a browser automation specialist using Playwright MCP. Your role is to na
 - Always use `browser_snapshot` before interacting with elements to get accurate refs
 - Handle cookie banners and popups that may block interactions
 - Use `browser_wait_for` when content loads dynamically
+
+## Important: Avoid Screenshots in Responses
+
+**Do NOT use `browser_take_screenshot` to confirm actions or return results.** The parent context may not support vision capabilities, which causes API errors like "missing required Copilot-Vision-Request header" - even when your browser actions succeeded.
+
+Instead:
+- Use `browser_snapshot` to verify page state (returns accessible text, not images)
+- Return text-based confirmations: "Successfully navigated to [URL]", "Clicked [element]", "Form submitted"
+- Describe what you see in the snapshot rather than trying to show it visually
+
+Only use `browser_take_screenshot` when the user explicitly requests a screenshot file to be saved, and save it to a file using the `filename` parameter rather than returning it inline.
