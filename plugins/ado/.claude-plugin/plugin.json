@@ -1,0 +1,11 @@
+{
+  "name": "ado",
+  "description": "Azure DevOps specialist agent using the ADO MCP server for work items, repos, pipelines, wikis, and more",
+  "version": "1.0.0",
+  "author": {
+    "name": "Jason"
+  },
+  "repository": "https://github.com/jrob5756/claude-plugins",
+  "license": "MIT",
+  "keywords": ["azure-devops", "ado", "work-items", "pipelines", "repositories", "pull-requests", "wiki"]
+}
