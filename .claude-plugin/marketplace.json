@@ -4,8 +4,8 @@
     "name": "Jason"
   },
   "metadata": {
-    "description": "Personal Claude Code plugins for web research, browser automation, Microsoft tools, and git workflows",
-    "version": "1.1.0",
+    "description": "Personal Claude Code plugins for web research, browser automation, Microsoft tools, Azure DevOps, and git workflows",
+    "version": "1.2.0",
     "pluginRoot": "./plugins"
   },
   "plugins": [
@@ -28,6 +28,11 @@
       "name": "git-tools",
       "source": "./plugins/git-tools",
       "description": "Git workflow commands and GitHub CLI reference skill"
+    },
+    {
+      "name": "ado",
+      "source": "./plugins/ado",
+      "description": "Azure DevOps agent with ADO MCP server for work items, repos, pipelines, and more"
     }
   ]
 }
