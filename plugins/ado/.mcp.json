@@ -5,7 +5,10 @@
       "command": "npx",
       "args": [
         "-y",
-        "@azure-devops/mcp"
+        "@azure-devops/mcp",
+        "msazure",
+        "--authentication",
+        "azcli"
       ],
       "env": {}
     }
