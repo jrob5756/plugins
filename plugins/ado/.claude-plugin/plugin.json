@@ -1,7 +1,7 @@
 {
   "name": "ado",
   "description": "Azure DevOps specialist agent using the ADO MCP server for work items, repos, pipelines, wikis, and more",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": {
     "name": "Jason"
   },
