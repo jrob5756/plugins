@@ -1,0 +1,11 @@
+{
+  "name": "octane",
+  "description": "Octane development workflow commands for implementing features from PRDs, reviewing implementations, and reviewing PR scenarios",
+  "version": "1.0.0",
+  "author": {
+    "name": "Jason"
+  },
+  "repository": "https://github.com/jrob5756/claude-plugins",
+  "license": "MIT",
+  "keywords": ["octane", "prd", "implementation", "review", "scenario", "workflow"]
+}

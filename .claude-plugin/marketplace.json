@@ -4,8 +4,8 @@
     "name": "Jason"
   },
   "metadata": {
-    "description": "Personal Claude Code plugins for web research, browser automation, Microsoft tools, Azure DevOps, and git workflows",
-    "version": "1.2.0",
+    "description": "Personal Claude Code plugins for web research, browser automation, Microsoft tools, Azure DevOps, git workflows, and Octane development workflows",
+    "version": "1.3.0",
     "pluginRoot": "./plugins"
   },
   "plugins": [
@@ -33,6 +33,11 @@
       "name": "ado",
       "source": "./plugins/ado",
       "description": "Azure DevOps agent with ADO MCP server for work items, repos, pipelines, and more"
+    },
+    {
+      "name": "octane",
+      "source": "./plugins/octane",
+      "description": "Octane development workflow commands for PRD-based implementation, code review, and scenario PR review"
     }
   ]
 }

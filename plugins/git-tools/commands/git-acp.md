@@ -25,7 +25,6 @@ Use a HEREDOC for the commit message:
 git commit -m "$(cat <<'EOF'
 Your commit message here
 
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 EOF
 )"
 ```
@@ -34,4 +33,3 @@ EOF
 
 - Never commit files that look like secrets (.env, credentials, keys)
 - If no changes exist, inform the user
-- Always include `Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>`

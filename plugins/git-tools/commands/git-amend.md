@@ -26,7 +26,6 @@ Amend the last commit with staged changes and/or a new message.
 git commit --amend -m "$(cat <<'EOF'
 Your new message here
 
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 EOF
 )"
 ```
