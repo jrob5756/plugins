@@ -1,140 +1,72 @@
 ---
 name: gh-cli
-description: Reference guide for using the GitHub CLI (gh) for PRs, issues, repos, workflows, and API access. Use when working with GitHub operations.
+description: GitHub interactions using the GH CLI. Triggers: create issue, list PRs, open pull request, merge PR, view repo, clone repository, check workflow, run actions, create release, search issues, review PR, gh command, GitHub API, repo settings, create gist, list releases, check CI status, switch GitHub account. More generally anything with GitHub should use this skill.
 ---
 
-# GitHub CLI (gh) Reference Guide
+# GitHub CLI
 
-Use this guide when working with GitHub operations via the `gh` CLI.
+Use the GitHub CLI (`gh`) for **all** GitHub interactions — issues, PRs, repos, releases, gists, workflows, and API calls. Never use the GitHub REST/GraphQL API directly or the MCP GitHub tools when `gh` can accomplish the task.
 
-## Authentication
+## Documentation
 
-```bash
-gh auth login          # Login to GitHub
-gh auth status         # Check auth status
-gh auth logout         # Logout
-```
+Full command reference: https://cli.github.com/manual/
 
-## Pull Requests
+Use your knowledge of `gh` commands first. Consult the documentation only when unsure about flags, subcommands, or newer features.
 
-### Create
-```bash
-gh pr create                                    # Interactive
-gh pr create --title "Title" --body "Body"      # With message
-gh pr create --draft                            # Draft PR
-gh pr create --base main                        # Specific base
-gh pr create --web                              # Open in browser
-```
+## Multi-Account Setup
 
-### View/List
-```bash
-gh pr list                  # List open PRs
-gh pr view 123              # View specific PR
-gh pr view 123 --web        # Open in browser
-gh pr view                  # Current branch's PR
-```
+Two GitHub accounts are configured:
 
-### Actions
-```bash
-gh pr checkout 123                              # Checkout PR locally
-gh pr merge 123                                 # Merge PR
-gh pr merge 123 --squash                        # Squash merge
-gh pr review 123 --approve                      # Approve
-gh pr review 123 --request-changes --body "..."  # Request changes
-gh pr close 123                                 # Close PR
-gh pr comment 123 --body "Comment"              # Add comment
-```
+| Account | Usage |
+|---------|-------|
+| `jrob5756` | Personal & Microsoft OSS |
+| `jasonrobert_microsoft` | Microsoft GitHub EMU |
 
-### View Comments
-```bash
-gh api repos/{owner}/{repo}/pulls/123/comments
-```
+### Handling 404 or Access Denied
 
-## Issues
+If a `gh` command returns a **404**, **403**, or any permission/access error:
 
-### Create
-```bash
-gh issue create                                 # Interactive
-gh issue create --title "Bug" --body "..."      # With details
-gh issue create --label "bug,priority:high"     # With labels
-gh issue create --assignee username             # Assign
-```
+1. Check which account is active: `gh auth status`
+2. Switch to the other account: `gh auth switch --user <other_user>`
+3. Retry the original command
 
-### View/List
-```bash
-gh issue list                                   # List open
-gh issue list --label "bug" --assignee "@me"    # Filter
-gh issue view 456                               # View specific
-gh issue view 456 --web                         # Open in browser
-```
+Try both accounts before reporting an access failure.
 
-### Actions
-```bash
-gh issue close 456                  # Close
-gh issue reopen 456                 # Reopen
-gh issue comment 456 --body "..."   # Comment
-```
-
-## Repositories
+## Common Commands
 
 ```bash
-gh repo clone owner/repo            # Clone
-gh repo create my-repo --public     # Create public
-gh repo create my-repo --private    # Create private
-gh repo fork owner/repo             # Fork
-gh repo view --web                  # Open in browser
-gh repo list                        # List your repos
+# Auth
+gh auth status                          # Show active account
+gh auth switch --user jrob5756          # Switch accounts
+
+# Repos
+gh repo view owner/repo
+gh repo clone owner/repo
+
+# Issues
+gh issue list -R owner/repo
+gh issue create -R owner/repo --title "..." --body "..."
+gh issue view 123 -R owner/repo
+
+# Pull Requests
+gh pr list -R owner/repo
+gh pr create --title "..." --body "..."
+gh pr view 123 -R owner/repo
+gh pr checkout 123
+gh pr merge 123 --squash
+
+# Workflows / Actions
+gh run list -R owner/repo
+gh run view <run-id> -R owner/repo
+gh workflow list -R owner/repo
+
+# API (escape hatch for anything not covered by a subcommand)
+gh api repos/owner/repo/contents/path
 ```
 
-## Workflows (GitHub Actions)
+## Guidelines
 
-```bash
-gh workflow list          # List workflows
-gh run list               # View runs
-gh run view 12345         # View specific run
-gh run watch 12345        # Watch in progress
-gh run rerun 12345        # Rerun failed
-gh run download 12345     # Download artifacts
-```
-
-## Releases
-
-```bash
-gh release list                                           # List
-gh release create v1.0.0 --title "v1.0.0" --notes "..."   # Create
-gh release create v1.0.0 --generate-notes                 # Auto notes
-gh release download v1.0.0                                # Download
-```
-
-## Gists
-
-```bash
-gh gist create file.txt             # Create private
-gh gist create file.txt --public    # Create public
-gh gist list                        # List
-gh gist view <gist-id>              # View
-```
-
-## API Access
-
-```bash
-gh api repos/{owner}/{repo}                                        # GET
-gh api repos/{owner}/{repo}/issues --method POST --field title="..." # POST
-gh api repos/{owner}/{repo}/pulls --jq '.[].title'                 # With jq
-```
-
-## Useful Flags
-
-| Flag | Description |
-|------|-------------|
-| `--web` / `-w` | Open in browser |
-| `--json` | Output as JSON |
-| `--jq` | Process with jq |
-| `--help` | Get help |
-
-## Tips
-
-1. Use `gh pr create --web` for complex PRs with reviewers
-2. Use `gh run watch` to monitor CI in terminal
-3. Use `gh api` for anything not covered by commands
-4. Enable tab completion: `gh completion -s bash >> ~/.bashrc`
+- Always pass `-R owner/repo` when operating on a repo that isn't the current working directory's origin.
+- Prefer `--json` output with `--jq` filters when you need to parse results programmatically.
+- Use `gh api` with `--paginate` for large result sets.
+- For destructive operations (delete, merge, close), confirm with the user first unless they explicitly asked for it.
