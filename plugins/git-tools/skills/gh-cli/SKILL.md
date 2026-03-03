@@ -70,3 +70,47 @@ gh api repos/owner/repo/contents/path
 - Prefer `--json` output with `--jq` filters when you need to parse results programmatically.
 - Use `gh api` with `--paginate` for large result sets.
 - For destructive operations (delete, merge, close), confirm with the user first unless they explicitly asked for it.
+
+## Adding Pending PR Review Comments
+
+To add pending (not yet submitted) review comments to a PR, use the GitHub API directly via `gh api`.
+
+### Steps
+
+1. **Build a JSON payload file** (e.g., `/tmp/pr-review-payload.json`):
+
+```json
+{
+  "comments": [
+    {
+      "path": "relative/path/to/file.ts",
+      "position": 10,
+      "body": "Your review comment here.\n\nSupports **markdown**."
+    }
+  ]
+}
+```
+
+**Field reference:**
+
+| Field | Description |
+|-------|-------------|
+| `path` | File path relative to repo root (must match a file in the PR diff) |
+| `position` | Line position **within the diff hunk** (not the file line number). Count lines from the `@@` hunk header, starting at 1. |
+| `body` | Comment body (supports GitHub-flavored markdown, use `\n` for newlines) |
+
+2. **Create the review** — Do NOT include an `event` field. Omitting it creates the review in PENDING state:
+
+```bash
+gh api repos/{owner}/{repo}/pulls/{pr_number}/reviews \
+  --method POST --input /tmp/pr-review-payload.json
+```
+
+3. **Verify** — The response will include `"state": "PENDING"`. The comments are now visible only to the author on the PR page, ready to be submitted.
+
+### Gotchas
+
+- **Do NOT set `"event": "PENDING"`** — this is not a valid event value and will return a 422 error. Simply omit the `event` field entirely to get PENDING state.
+- **Do NOT use `--field` for the comments array** — `gh` will serialize it as a string, not JSON. Always write to a file and use `--input`.
+- **Do NOT set `"event": "COMMENT"` or `"event": "APPROVE"`** — this will immediately submit the review. Omit `event` to keep it pending.
+- **Finding the diff position**: Run `gh api repos/{owner}/{repo}/pulls/{pr_number}/files` to see each file's `patch` field, then count lines within the relevant hunk.

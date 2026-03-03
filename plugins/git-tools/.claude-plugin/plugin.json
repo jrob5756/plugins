@@ -1,7 +1,7 @@
 {
   "name": "git-tools",
   "description": "Git and GitHub CLI workflow automation with custom slash commands",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": {
     "name": "Jason"
   },

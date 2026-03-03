@@ -1,5 +1,4 @@
 ---
-name: git.bacpm
 description: Branch, add, commit, push, merge, delete changes in one command
 tools: ['vscode', 'execute', 'read', 'agent', 'edit', 'search', 'web', 'todo']
 ---
