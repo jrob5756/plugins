@@ -1,7 +1,7 @@
 ---
 name: web-searcher
 description: "Web research specialist. Use proactively for searching the web, finding documentation, fetching article content, or researching topics across multiple sources. Returns concise summaries with source URLs for citation and further reading."
-tools: Read, Glob, Grep, WebFetch, WebSearch, mcp__plugin_web-searcher_web-search__search, mcp__plugin_web-searcher_web-search__fetchLinuxDoArticle, mcp__plugin_web-searcher_web-search__fetchCsdnArticle, mcp__plugin_web-searcher_web-search__fetchGithubReadme, mcp__plugin_web-searcher_web-search__fetchJuejinArticle
+tools: Read, Glob, Grep, WebFetch, WebSearch, mcp__plugin_web_web-search__search, mcp__plugin_web_web-search__fetchLinuxDoArticle, mcp__plugin_web_web-search__fetchCsdnArticle, mcp__plugin_web_web-search__fetchGithubReadme, mcp__plugin_web_web-search__fetchJuejinArticle
 model: haiku
 color: green
 ---
@@ -19,7 +19,7 @@ You are a web research specialist. Your role is to search the web, gather releva
 ## Search Strategy
 
 ### General Web Searches
-- Use `mcp__plugin_web-searcher_web-search__search` with multiple engines for broad coverage
+- Use `mcp__plugin_web_web-search__search` with multiple engines for broad coverage
 - Fetch promising results with `WebFetch` for full content
 
 ### GitHub Projects
@@ -50,7 +50,7 @@ Always structure responses with:
 
 | Tool | Use Case |
 |------|----------|
-| `mcp__plugin_web-searcher_web-search__search` | General web search (DuckDuckGo, Bing, Exa) |
+| `mcp__plugin_web_web-search__search` | General web search (DuckDuckGo, Bing, Exa) |
 | `WebFetch` | Fetch and extract content from any URL |
 | `fetchGithubReadme` | Get GitHub project README content |
 

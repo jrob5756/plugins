@@ -1,0 +1,11 @@
+{
+  "name": "conductor",
+  "description": "Skills and tools for using conductor, a workflow engine for multi-agent orchestration.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Jason"
+  },
+  "repository": "https://github.com/jrob5756/claude-plugins",
+  "license": "MIT",
+  "keywords": ["conductor", "workflow", "orchestration", "automation"]
+}
