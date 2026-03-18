@@ -7,5 +7,6 @@
   },
   "repository": "https://github.com/jrob5756/claude-plugins",
   "license": "MIT",
-  "keywords": ["conductor", "workflow", "orchestration", "automation"]
+  "keywords": ["conductor", "workflow", "orchestration", "automation"],
+  "skills": ["./skills/conductor"]
 }

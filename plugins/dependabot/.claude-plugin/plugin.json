@@ -1,0 +1,12 @@
+{
+  "name": "dependabot",
+  "description": "Dependabot PR management — review, fix, and merge automation",
+  "version": "1.0.0",
+  "author": {
+    "name": "Jason"
+  },
+  "repository": "https://github.com/jrob5756/claude-plugins",
+  "license": "MIT",
+  "keywords": ["dependabot", "github", "pull-requests", "automation", "ci"],
+  "skills": ["./skills/dependabot"]
+}

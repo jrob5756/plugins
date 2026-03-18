@@ -8,6 +8,7 @@
   "repository": "https://github.com/jrob5756/claude-plugins",
   "license": "MIT",
   "keywords": ["playwright", "browser-automation", "web-scraping", "testing"],
+  "agents": ["./agents/playwright.md"],
   "hooks": {
     "SessionStart": [
       {

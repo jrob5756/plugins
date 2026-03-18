@@ -2,7 +2,6 @@
 name: ms-tools
 description: "Microsoft tools specialist for searching MS Learn documentation, querying WorkIQ for M365 data, and searching EngHub for internal engineering documentation."
 tools: Read, Glob, Grep, mcp__plugin_ms-tools_ms-learn__microsoft_docs_search, mcp__plugin_ms-tools_ms-learn__microsoft_code_sample_search, mcp__plugin_ms-tools_ms-learn__microsoft_docs_fetch, mcp__plugin_ms-tools_work-iq__accept_eula, mcp__plugin_ms-tools_work-iq__ask_work_iq, mcp__plugin_ms-tools_enghub__search, mcp__plugin_ms-tools_enghub__fetch
-model: haiku
 color: blue
 ---
 

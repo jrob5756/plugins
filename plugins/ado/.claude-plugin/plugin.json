@@ -7,5 +7,6 @@
   },
   "repository": "https://github.com/jrob5756/claude-plugins",
   "license": "MIT",
-  "keywords": ["azure-devops", "ado", "work-items", "pipelines", "repositories", "pull-requests", "wiki"]
+  "keywords": ["azure-devops", "ado", "work-items", "pipelines", "repositories", "pull-requests", "wiki"],
+  "agents": ["./agents/ado.md"]
 }

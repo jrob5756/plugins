@@ -2,7 +2,6 @@
 name: web-searcher
 description: "Web research specialist. Use proactively for searching the web, finding documentation, fetching article content, or researching topics across multiple sources. Returns concise summaries with source URLs for citation and further reading."
 tools: Read, Glob, Grep, WebFetch, WebSearch, mcp__plugin_web_web-search__search, mcp__plugin_web_web-search__fetchLinuxDoArticle, mcp__plugin_web_web-search__fetchCsdnArticle, mcp__plugin_web_web-search__fetchGithubReadme, mcp__plugin_web_web-search__fetchJuejinArticle
-model: haiku
 color: green
 ---
 
