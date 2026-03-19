@@ -121,6 +121,24 @@ createdDateTime    — ISO timestamp
 6. Cache discovered messages and new users
 ```
 
+### Reading thread replies
+
+`ListChannelMessages` only returns **top-level posts**. To read threaded replies under a post, run the fetch-replies Python script defined in the agent instructions. The script:
+
+1. Gets a Graph API token via `az account get-access-token`
+2. Calls `GET /teams/{teamId}/channels/{channelId}/messages/{messageId}/replies`
+3. Cleans HTML from each reply body
+4. Prints formatted results
+
+```
+1. Read ~/.local/share/teams-mcp-cache/teams.json
+2. Resolve teamId + channelId by name
+3. Call ListChannelMessages to find the parent post (match by sender/date/keywords)
+4. Run the fetch-replies Python heredoc with teamId, channelId, messageId
+5. Clean HTML from reply bodies
+6. Cache discovered users from reply senders
+```
+
 ### HTML Cleanup (REQUIRED for channel messages)
 
 Channel message bodies are raw HTML. Always clean before presenting.

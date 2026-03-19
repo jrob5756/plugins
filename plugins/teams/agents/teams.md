@@ -59,6 +59,11 @@ with open(path, 'w') as f: json.dump(cache, f, indent=2)
 3. If chat ID cached → `PostMessage` directly
 4. If not → `ListChats` with UPN filter → cache the result → `PostMessage`
 
+### Send a message to self (drafts / notes)
+The self-chat is cached as `"Jason Robert (self)"` in `chats.json` with chatId `48:notes`.
+1. Read `chats.json` → look for "(self)" entry → use chatId `48:notes`
+2. `PostMessage` directly — supports HTML content type for rich formatting
+
 ### Read recent messages
 1. Check `messages/{chatId-safe}.json` for cached messages
 2. If stale or missing → `ListChatMessages` → cache results
@@ -84,6 +89,53 @@ with open(path, 'w') as f: json.dump(cache, f, indent=2)
 - `body.contentType` — always "Html" for channel messages
 - `body.content` — full HTML content; MUST be cleaned before presenting
 - `createdDateTime` — ISO timestamp
+
+### Read thread replies (replies to a channel post)
+1. Read `teams.json` → find team ID and channel ID by name
+2. Call `ListChannelMessages` to find the parent message (match by sender, date, or keywords)
+3. Fetch replies via Graph API using the Python script below (the Teams MCP does not expose a replies endpoint)
+4. **Clean the HTML** from each reply body before presenting
+5. Match replies by sender name, date, or content keywords
+6. Cache discovered users from reply senders to `users.json`
+
+**Important:** `ListChannelMessages` only returns top-level posts. To read threaded replies, run the fetch-replies script.
+
+#### Fetch replies script
+
+```bash
+python3 << 'PYEOF'
+import json, subprocess, urllib.request, html, re
+
+TEAM_ID = "<teamId>"
+CHANNEL_ID = "<channelId>"
+MESSAGE_ID = "<messageId>"  # parent post ID
+
+token = subprocess.run(
+    ["az", "account", "get-access-token",
+     "--resource", "https://graph.microsoft.com",
+     "--query", "accessToken", "-o", "tsv"],
+    capture_output=True, text=True
+).stdout.strip()
+
+url = f"https://graph.microsoft.com/beta/teams/{TEAM_ID}/channels/{CHANNEL_ID}/messages/{MESSAGE_ID}/replies?$top=50"
+req = urllib.request.Request(url, headers={"Authorization": f"Bearer {token}"})
+with urllib.request.urlopen(req) as resp:
+    data = json.loads(resp.read())
+
+def clean(raw):
+    t = re.sub(r'<br\s*/?>', '\n', raw)
+    t = re.sub(r'<[^>]+>', '', t)
+    return html.unescape(t).strip()
+
+for r in data.get("value", []):
+    sender = (r.get("from") or {}).get("user", {}).get("displayName", "Unknown")
+    body = clean(r.get("body", {}).get("content", ""))
+    ts = r.get("createdDateTime", "")
+    print(f"**{sender}** ({ts}): {body}")
+PYEOF
+```
+
+Replace `<teamId>`, `<channelId>`, and `<messageId>` with actual values from cache/API.
 
 ### Search messages
 1. Use `SearchTeamsMessages` for broad searches
