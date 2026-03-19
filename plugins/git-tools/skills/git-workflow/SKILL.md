@@ -1,8 +1,8 @@
 ---
 name: git-workflow
-argument-hint: "[acp | amend | bacp | bacpm | branch | sync] [optional hint or message]"
+argument-hint: "[acp | afp | bacp | bacpm | b | mdb | p] [optional hint or message]"
 description: |
-  Git workflow automation — stage, commit, push, branch, PR, merge, and sync in single operations. Use when the user wants to commit and push changes, amend a commit, create a branch and PR, ship changes end-to-end, or sync with remote. Triggers: acp, add commit push, commit and push, push my changes, amend, amend commit, force push, update last commit, bacp, branch add commit push, branch and PR, open PR, bacpm, branch commit push merge, ship it, land this, branch, create branch, new branch, new branch from changes, sync, pull, pull rebase, fetch and pull, update branch. Use this skill even if the user doesn't name a specific workflow — infer the right one from context.
+  Git workflow automation — stage, commit, push, branch, PR, merge, and sync in single operations. Use when the user wants to commit and push changes, amend a commit, create a branch and PR, ship changes end-to-end, merge a PR and clean up, or sync with remote. Triggers: acp, add commit push, commit and push, push my changes, afp, amend, amend commit, force push, update last commit, bacp, branch add commit push, branch and PR, open PR, bacpm, branch commit push merge, ship it, land this, b, branch, create branch, new branch, new branch from changes, mdb, merge, merge PR, merge and delete, merge branch, close branch, p, sync, pull, pull rebase, fetch and pull, update branch. Use this skill even if the user doesn't name a specific workflow — infer the right one from context.
 ---
 
 # Git Workflows
@@ -14,11 +14,12 @@ Automated git workflow shortcuts. Parse the user's request to determine which wo
 | User says | Workflow |
 |-----------|----------|
 | "acp", "add commit push", "commit and push", "push my changes" | **ACP** |
-| "amend", "amend commit", "force push", "update last commit" | **Amend** |
+| "afp", "amend", "amend commit", "force push", "update last commit" | **Amend** |
 | "bacp", "branch and PR", "branch add commit push", "open PR" | **BACP** |
 | "bacpm", "ship it", "land this", "branch commit push merge" | **BACPM** |
-| "branch", "create branch", "new branch" | **Branch** |
-| "sync", "pull", "pull rebase", "fetch", "update branch" | **Sync** |
+| "b", "branch", "create branch", "new branch" | **Branch** |
+| "mdb", "merge", "merge PR", "merge and delete", "merge branch", "close branch" | **Merge** |
+| "p", "sync", "pull", "pull rebase", "fetch", "update branch" | **Sync** |
 
 ## Constraints
 
@@ -97,6 +98,9 @@ git checkout -b <name> && git add <files> && git commit -m "msg" && git push -u 
 
 # BACPM — branch + PR + merge
 # BACP steps, then: gh pr merge --squash --delete-branch && git checkout main && git pull --rebase origin main
+
+# Merge — merge PR and delete branch
+gh pr merge --squash --delete-branch && git checkout main && git pull --rebase origin main && git branch -d <branch-name>
 
 # Sync — fetch + rebase
 git fetch && git pull --rebase
@@ -222,6 +226,35 @@ Run the full **BACP** workflow (steps 1–6 above), then:
    - **No:** Stop and report the PR URL.
 
 **Output:** Confirm the merge and that the local branch was cleaned up (or the PR URL if not merged).
+
+---
+
+### Merge — Merge PR & Delete Branch
+
+**When to use:** The user wants to merge the current branch's PR and clean up the branch locally and remotely.
+
+1. **Verify not on main:**
+   ```bash
+   git branch --show-current
+   ```
+   If on `main`/`master`, stop and tell the user there is nothing to merge.
+
+2. **Check PR status:**
+   ```bash
+   gh pr view --json state,mergeable,title,url
+   ```
+   If no PR exists for the current branch, stop and tell the user. If the PR is not mergeable, report the reason.
+
+3. **Merge and clean up:**
+   ```bash
+   gh pr merge --squash --delete-branch && git checkout main && git pull --rebase origin main
+   ```
+   Then delete the local branch if it still exists:
+   ```bash
+   git branch -d <branch-name>
+   ```
+
+**Output:** Confirm the PR was merged, the remote branch was deleted, and the local branch was cleaned up.
 
 ---
 

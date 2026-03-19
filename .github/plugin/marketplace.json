@@ -4,8 +4,8 @@
     "name": "Jason"
   },
   "metadata": {
-    "description": "Plugin marketplace for Claude Code and VS Code Copilot — web research, browser automation, Microsoft tools, Azure DevOps, git workflows, and workflow orchestration",
-    "version": "2.0.0",
+    "description": "Plugin marketplace for Claude Code and VS Code Copilot — web research, browser automation, Microsoft tools, Azure DevOps, git workflows, Teams messaging, and workflow orchestration",
+    "version": "2.1.0",
     "pluginRoot": "./plugins"
   },
   "plugins": [
@@ -54,6 +54,13 @@
       "description": "Dependabot PR management — review, fix, and merge automation",
       "version": "1.0.0",
       "skills": ["./skills/dependabot"]
+    },
+    {
+      "name": "teams",
+      "source": "./plugins/teams",
+      "description": "Microsoft Teams efficiency plugin with local caching for user IDs, chat IDs, and team/channel IDs",
+      "version": "1.0.0",
+      "skills": ["./skills/teams-cache"]
     }
   ]
 }

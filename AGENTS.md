@@ -38,6 +38,7 @@ Each plugin defines its agent in `plugins/<name>/agents/<name>.md`:
 - [ado](./plugins/ado/agents/ado.md) - Azure DevOps work items, repos, pipelines, wikis
 - [git-tools](./plugins/git-tools/) - Git workflow commands and GitHub CLI skill
 - [dependabot](./plugins/dependabot/) - Dependabot PR review, fix, and merge automation
+- [teams](./plugins/teams/agents/teams.md) - Microsoft Teams specialist with local cache for efficient messaging
 
 ## When Adding a New Plugin
 

@@ -1,0 +1,13 @@
+{
+  "name": "teams",
+  "description": "Microsoft Teams efficiency plugin with local caching for user IDs, chat IDs, team/channel IDs, and recent messages",
+  "version": "1.0.0",
+  "author": {
+    "name": "Jason"
+  },
+  "repository": "https://github.com/jrob5756/claude-plugins",
+  "license": "MIT",
+  "keywords": ["teams", "microsoft-teams", "chat", "messaging", "cache", "efficiency"],
+  "agents": ["./agents/teams.md"],
+  "skills": ["./skills/teams-cache"]
+}
