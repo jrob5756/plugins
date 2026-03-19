@@ -69,9 +69,62 @@ with open(path, 'w') as f: json.dump(cache, f, indent=2)
 2. If found → `PostChannelMessage` directly
 3. If not → `ListTeams` → `ListChannels` → cache → post
 
+### Read channel messages (find a specific post or catch up on a thread)
+1. Read `teams.json` → find team ID and channel ID by name
+2. Call `ListChannelMessages` with teamId + channelId
+3. **Clean the HTML** from each message body before presenting (see HTML Cleanup below)
+4. Match messages by sender (`from.displayName`), date, or content keywords
+5. Cache discovered messages to `messages/{safe-channel-id}.json`
+6. Cache any new users found in `from.displayName` to `users.json`
+
+**Channel message response structure** (differs from chat messages):
+- `from.displayName` — sender name (flat, NOT nested under `from.user`)
+- `from.id` — sender user ID
+- `subject` — often empty for channel posts; do NOT rely on this for matching
+- `body.contentType` — always "Html" for channel messages
+- `body.content` — full HTML content; MUST be cleaned before presenting
+- `createdDateTime` — ISO timestamp
+
 ### Search messages
 1. Use `SearchTeamsMessages` for broad searches
 2. Cache any discovered chat/user IDs from results
+
+## HTML Cleanup (REQUIRED for channel messages)
+
+Channel message bodies are HTML. Always strip HTML before presenting to the user.
+
+Use this heredoc pattern (avoids shell escaping issues with inline python):
+
+```bash
+python3 << 'PYEOF'
+import json, html, re
+
+def clean_html(raw):
+    text = re.sub(r'<br\s*/?>', '\n', raw)
+    text = re.sub(r'<li[^>]*>', '- ', text)
+    text = re.sub(r'</li>', '\n', text)
+    text = re.sub(r'<h[12][^>]*>', '\n## ', text)
+    text = re.sub(r'</h[12]>', '\n', text)
+    text = re.sub(r'<h[34][^>]*>', '\n### ', text)
+    text = re.sub(r'</h[34]>', '\n', text)
+    text = re.sub(r'<codeblock[^>]*><code>', '\n```\n', text)
+    text = re.sub(r'</code></codeblock>', '\n```\n', text)
+    text = re.sub(r'<p[^>]*>', '', text)
+    text = re.sub(r'</p>', '\n', text)
+    text = re.sub(r'<[^>]+>', '', text)
+    text = html.unescape(text)
+    text = re.sub(r'\n{3,}', '\n\n', text)
+    return text.strip()
+
+# Usage: read the message JSON, clean each body, print results
+# Adapt the file path and filtering as needed
+PYEOF
+```
+
+**Key rules:**
+- Always use a heredoc (`<< 'PYEOF'`) for Python scripts — inline `-c` breaks on complex HTML regexes
+- Strip HTML BEFORE presenting any channel message content
+- Preserve code blocks, headers, and list structure when converting
 
 ## Name Resolution
 
@@ -95,4 +148,6 @@ When the user says a name like "Lucio" or "Eli":
 - Never fabricate UPNs or IDs — always look up from cache or API
 - Never expose raw GUIDs to the user — use display names
 - Update cache files after every API lookup that returns new data
-- Keep message cache to last 50 messages per chat
+- Keep message cache to last 50 messages per chat/channel
+- **Always clean HTML** from channel message bodies before presenting to user
+- Use Python heredocs (`<< 'PYEOF'`) for any HTML parsing — never use inline `python3 -c` with complex regexes

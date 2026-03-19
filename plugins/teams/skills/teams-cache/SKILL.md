@@ -21,8 +21,8 @@ Every Teams MCP operation requires identifiers (user UPNs, chat IDs, team IDs, c
 ├── users.json           # Display name → UPN + userId mapping
 ├── chats.json           # Chat label → chatId + type + members
 ├── teams.json           # Team name → teamId + channels
-└── messages/            # Recent messages per chat
-    └── {safe-chat-id}.json
+└── messages/            # Recent messages per chat or channel
+    └── {safe-id}.json   # safe-id: chat ID or channel ID with :@/ replaced by _
 ```
 
 ## Cache-First Workflow
@@ -95,15 +95,75 @@ def update_cache(filename, key, value):
 4. Not found? → Call ListTeams / ListChannels → Add to teams.json
 ```
 
+## Reading Channel Messages
+
+Channel messages require special handling — they have a different response structure than chat messages and their bodies are always HTML.
+
+### Channel message response structure
+
+```
+from.displayName   — sender name (flat, NOT nested under from.user)
+from.id            — sender user ID
+subject            — often empty; do NOT rely on this for matching
+body.contentType   — always "Html"
+body.content       — raw HTML; MUST be cleaned before presenting
+createdDateTime    — ISO timestamp
+```
+
+### Finding a specific channel message
+
+```
+1. Read ~/.local/share/teams-mcp-cache/teams.json
+2. Resolve teamId + channelId by name
+3. Call ListChannelMessages with teamId + channelId
+4. Match by from.displayName (sender), createdDateTime (date), or body content keywords
+5. Clean HTML from body.content before presenting
+6. Cache discovered messages and new users
+```
+
+### HTML Cleanup (REQUIRED for channel messages)
+
+Channel message bodies are raw HTML. Always clean before presenting.
+
+Use a heredoc to avoid shell escaping issues:
+
+```bash
+python3 << 'PYEOF'
+import json, html, re
+
+def clean_html(raw):
+    text = re.sub(r'<br\s*/?>', '\n', raw)
+    text = re.sub(r'<li[^>]*>', '- ', text)
+    text = re.sub(r'</li>', '\n', text)
+    text = re.sub(r'<h[12][^>]*>', '\n## ', text)
+    text = re.sub(r'</h[12]>', '\n', text)
+    text = re.sub(r'<h[34][^>]*>', '\n### ', text)
+    text = re.sub(r'</h[34]>', '\n', text)
+    text = re.sub(r'<codeblock[^>]*><code>', '\n```\n', text)
+    text = re.sub(r'</code></codeblock>', '\n```\n', text)
+    text = re.sub(r'<p[^>]*>', '', text)
+    text = re.sub(r'</p>', '\n', text)
+    text = re.sub(r'<[^>]+>', '', text)
+    text = html.unescape(text)
+    text = re.sub(r'\n{3,}', '\n\n', text)
+    return text.strip()
+PYEOF
+```
+
+**Key rules:**
+- Always use a heredoc (`<< 'PYEOF'`) — inline `python3 -c` breaks on complex regexes
+- Strip HTML BEFORE presenting any channel message content
+- Preserve code blocks, headers, and list structure when converting
+
 ## Message Caching
 
-After reading messages from a chat, cache them locally:
+After reading messages from a chat or channel, cache them locally:
 
 ```
-~/.local/share/teams-mcp-cache/messages/{safe-chat-id}.json
+~/.local/share/teams-mcp-cache/messages/{safe-id}.json
 ```
 
-Where `safe-chat-id` replaces `:`, `@`, and `/` with `_`.
+Where `safe-id` replaces `:`, `@`, and `/` with `_`. Works for both chat IDs and channel IDs.
 
 ### Message cache format
 
@@ -116,7 +176,7 @@ Where `safe-chat-id` replaces `:`, `@`, and `/` with `_`.
     {
       "id": "msg-id",
       "sender": "Display Name",
-      "content": "Message text",
+      "content": "Cleaned plaintext content",
       "timestamp": "2026-03-19T13:45:00Z"
     }
   ]
@@ -172,6 +232,8 @@ This skill works with ALL Teams MCP tools:
 | `ListTeams` | Cache provides teamId → skip for known teams |
 | `ListChannels` | Cache provides channelId → skip for known channels |
 | `PostChannelMessage` | Cache provides teamId + channelId |
+| `ListChannelMessages` | Cache provides teamId + channelId; cache messages + new users from results |
+| `ReplyToChannelMessage` | Cache provides teamId + channelId + messageId |
 | `SearchTeamsMessages` | Cache new users/chats from results |
 | `CreateChat` | Cache the new chat immediately |
 
