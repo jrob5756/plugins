@@ -5,8 +5,7 @@
   },
   "metadata": {
     "description": "Plugin marketplace for Claude Code and VS Code Copilot — web research, browser automation, Microsoft tools, Azure DevOps, git workflows, Teams messaging, workflow orchestration, and PR review",
-    "version": "2.2.0",
-    "pluginRoot": "./plugins"
+    "version": "2.2.0"
   },
   "plugins": [
     {
