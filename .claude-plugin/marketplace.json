@@ -4,8 +4,8 @@
     "name": "Jason"
   },
   "metadata": {
-    "description": "Plugin marketplace for Claude Code and VS Code Copilot — web research, browser automation, Microsoft tools, Azure DevOps, git workflows, Teams messaging, and workflow orchestration",
-    "version": "2.1.0",
+    "description": "Plugin marketplace for Claude Code and VS Code Copilot — web research, browser automation, Microsoft tools, Azure DevOps, git workflows, Teams messaging, workflow orchestration, and PR review",
+    "version": "2.2.0",
     "pluginRoot": "./plugins"
   },
   "plugins": [
@@ -61,6 +61,13 @@
       "description": "Microsoft Teams efficiency plugin with local caching for user IDs, chat IDs, and team/channel IDs",
       "version": "1.0.0",
       "skills": ["./skills/teams-cache"]
+    },
+    {
+      "name": "pr-review-toolkit",
+      "source": "./plugins/pr-review-toolkit",
+      "description": "Comprehensive PR review agents for code quality, tests, comments, error handling, type design, and simplification",
+      "version": "1.0.0",
+      "skills": ["./skills/pr-review"]
     }
   ]
 }

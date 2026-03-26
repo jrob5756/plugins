@@ -1,0 +1,19 @@
+{
+  "name": "pr-review-toolkit",
+  "description": "Comprehensive PR review agents specializing in comments, tests, error handling, type design, code quality, and code simplification",
+  "author": {
+    "name": "Anthropic",
+    "email": "support@anthropic.com"
+  },
+  "agents": [
+    "agents/code-reviewer.md",
+    "agents/code-simplifier.md",
+    "agents/comment-analyzer.md",
+    "agents/pr-test-analyzer.md",
+    "agents/silent-failure-hunter.md",
+    "agents/type-design-analyzer.md"
+  ],
+  "skills": [
+    "skills/pr-review"
+  ]
+}
