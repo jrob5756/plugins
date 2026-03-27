@@ -1,0 +1,13 @@
+{
+  "name": "shared1",
+  "description": "Test plugin for validating cross-experience duplicate artifact behavior",
+  "version": "1.0.0",
+  "author": {
+    "name": "Jason"
+  },
+  "repository": "https://github.com/jrob5756/claude-plugins",
+  "license": "MIT",
+  "keywords": ["test", "utility", "time"],
+  "agents": ["./agents/shared1.md"],
+  "skills": ["./skills/generic"]
+}

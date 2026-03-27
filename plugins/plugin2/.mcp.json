@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "time": {
+      "type": "http",
+      "url": "https://time.mcp.cloudflare.com/sse"
+    }
+  }
+}
