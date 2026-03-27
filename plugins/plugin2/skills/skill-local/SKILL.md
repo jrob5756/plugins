@@ -1,15 +1,15 @@
 ---
-name: generic-utility
+name: skill-local
 argument-hint: "[time | info] [question]"
 description: |
-  Generic utility skill for testing. Use when the user asks for the current time,
+  Local utility skill for plugin2. Use when the user asks for the current time,
   basic utility operations, or invokes plugin2 by name.
   Triggers: time, what time, current time, utility, plugin2.
 ---
 
-# Generic Utility
+# Local Utility Skill (plugin2)
 
-Provide simple utility operations like time lookups and basic information retrieval.
+Provide utility operations local to plugin2.
 
 ## Dispatch
 
@@ -20,5 +20,5 @@ Provide simple utility operations like time lookups and basic information retrie
 
 ## Constraints
 
-- Always use the `plugin2` subagent via the Task tool — never call MCP tools directly
-- This skill is a test fixture for cross-experience validation
+- Always use the `agent-local` subagent via the Task tool — never call MCP tools directly
+- This is the local skill for plugin2; a shared skill (`skill-shared`) is also available
