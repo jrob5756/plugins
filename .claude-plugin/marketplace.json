@@ -4,8 +4,8 @@
     "name": "Jason"
   },
   "metadata": {
-    "description": "Plugin marketplace for Claude Code and VS Code Copilot — web research, browser automation, Microsoft tools, Azure DevOps, git workflows, Teams messaging, workflow orchestration, and PR review",
-    "version": "2.2.0",
+    "description": "Plugin marketplace for Claude Code and VS Code Copilot — web research, browser automation, Microsoft tools, Azure DevOps, git workflows, Teams messaging, and PR review",
+    "version": "2.3.0",
     "pluginRoot": "./plugins"
   },
   "plugins": [
@@ -40,13 +40,6 @@
       "source": "./plugins/ado",
       "description": "Azure DevOps agent with ADO MCP server for work items, repos, pipelines, and more",
       "version": "1.0.1"
-    },
-    {
-      "name": "conductor",
-      "source": "./plugins/conductor",
-      "description": "Workflow orchestration skills for multi-agent automation via Conductor",
-      "version": "1.0.0",
-      "skills": ["./skills/conductor"]
     },
     {
       "name": "dependabot",
