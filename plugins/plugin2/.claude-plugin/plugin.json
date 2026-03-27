@@ -8,6 +8,6 @@
   "repository": "https://github.com/jrob5756/claude-plugins",
   "license": "MIT",
   "keywords": ["test", "utility", "time"],
-  "agents": ["./agents/agent-local.md", "../shared/agents/agent-shared.md"],
-  "skills": ["./skills/skill-local", "../shared/skills/skill-shared"]
+  "agents": ["./agents/agent-local.md"],
+  "skills": ["./skills/skill-local"]
 }

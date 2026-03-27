@@ -21,4 +21,4 @@ Provide utility operations local to plugin2.
 ## Constraints
 
 - Always use the `agent-local` subagent via the Task tool — never call MCP tools directly
-- This is the local skill for plugin2; a shared skill (`skill-shared`) is also available
+- This is the local skill for plugin2

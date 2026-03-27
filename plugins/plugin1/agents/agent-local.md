@@ -22,4 +22,4 @@ You are the local utility agent for plugin1.
 
 ## Notes
 
-This is the local agent for plugin1. The plugin also references a shared agent (`agent-shared`) from `plugins/shared/`.
+This is the local agent for plugin1.
