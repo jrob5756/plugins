@@ -2,11 +2,17 @@
 name: teams-cache
 description: |
   Teams MCP efficiency layer with local caching of user UPNs, chat IDs, team IDs,
-  channel IDs, and recent messages. Triggers: teams, send teams message, check teams,
-  teams chat, read teams messages, post to teams, teams channel, message someone on teams,
-  teams lookup, find teams chat, teams user, who is on teams, list teams chats,
-  teams group, teams meeting. Always use this skill before making Teams MCP API calls
-  to check the local cache first and avoid redundant lookups.
+  channel IDs, and recent messages. ALWAYS use this skill for ANY operation involving
+  Teams MCP tools — including sending messages, reading messages, listing chats,
+  posting to channels, or looking up users. This skill MUST be activated before
+  calling ANY Teams MCP tool (ListChats, PostMessage, ListChatMessages, ListTeams,
+  ListChannels, PostChannelMessage, ListChannelMessages, SendMessageToSelf,
+  SearchTeamsMessages, CreateChat, etc.). Triggers: send message, read message,
+  message someone, chat with, reply to, latest message, post to channel, teams,
+  send teams message, check teams, teams chat, read teams messages, post to teams,
+  teams channel, teams lookup, find teams chat, teams user, who is on teams,
+  list teams chats, teams group, teams meeting. Always invoke this skill first
+  to check the local cache and avoid redundant API lookups.
 ---
 
 # Teams Cache — Efficient Teams MCP Usage
@@ -74,7 +80,44 @@ def update_cache(filename, key, value):
 1. Read ~/.local/share/teams-mcp-cache/users.json
 2. Search for display name (case-insensitive substring match)
 3. Found? → Return {upn, userId}
-4. Not found? → Use Teams user search tools → Add to users.json
+4. Not found? → Use the cache miss resolution steps below → Add to users.json
+```
+
+#### User cache miss resolution/
+
+When a user is not in the cache, resolve their identity using these methods in priority order:
+
+**Method 1: SearchTeamMessagesQueryParameters (preferred)**
+Search for messages from the user — this returns their display name, email/UPN, and chatId in one call:
+```
+queryString: "from:FirstName LastName"
+size: 3
+```
+Extract from the response:
+- `from.emailAddress.name` → display name
+- `from.emailAddress.address` → UPN (email)
+- `chatId` → chat ID (also update chats.json)
+
+This is the best method because it resolves the user, their UPN, AND the chat ID simultaneously.
+
+**Method 2: SearchTeamsMessages (natural language fallback)**
+If the name is ambiguous or Method 1 returns no results:
+```
+message: "messages from FirstName LastName"
+```
+Parse the response for user identity details and chat context.
+
+**After resolving, always update BOTH caches:**
+```python
+# Add to users.json
+users["Display Name"] = {"upn": "user@domain.com", "userId": "guid"}
+
+# Add to chats.json (if a 1:1 chat was found)
+chats["Display Name"] = {
+    "chatId": "19:...@unq.gbl.spaces",
+    "type": "oneOnOne",
+    "members": ["Jason Robert", "Display Name"]
+}
 ```
 
 ### Finding a Chat ID
@@ -83,7 +126,8 @@ def update_cache(filename, key, value):
 1. Read ~/.local/share/teams-mcp-cache/chats.json
 2. Search by label (person name for 1:1, topic for groups)
 3. Found? → Return chatId
-4. Not found? → Call ListChats with user UPN filter → Add to chats.json
+4. Not found? → First resolve the user UPN (see above), then call ListChats
+   with user UPN filter → Add to chats.json
 ```
 
 ### Finding a Team / Channel ID
