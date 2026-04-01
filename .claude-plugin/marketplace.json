@@ -5,7 +5,7 @@
   },
   "metadata": {
     "description": "Plugin marketplace for Claude Code and VS Code Copilot — web research, browser automation, Microsoft tools, Azure DevOps, git workflows, Teams messaging, and PR review",
-    "version": "2.4.0",
+    "version": "2.5.0",
     "pluginRoot": "./plugins"
   },
   "plugins": [
@@ -61,20 +61,6 @@
       "description": "Comprehensive PR review agents for code quality, tests, comments, error handling, type design, and simplification",
       "version": "1.0.0",
       "skills": ["./skills/pr-review"]
-    },
-    {
-      "name": "plugin1",
-      "source": "./plugins/plugin1",
-      "description": "Test plugin with local and shared agents/skills for cross-experience validation",
-      "version": "1.1.0",
-      "skills": ["./skills/skill-local"]
-    },
-    {
-      "name": "plugin2",
-      "source": "./plugins/plugin2",
-      "description": "Test plugin with local agent and skill for cross-experience validation",
-      "version": "1.2.0",
-      "skills": ["./skills/skill-local"]
     }
   ]
 }
