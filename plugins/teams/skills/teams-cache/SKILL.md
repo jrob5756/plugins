@@ -29,6 +29,21 @@ Resolve the full path relative to the workspace root. All commands follow the pa
 python3 "$CACHE_SCRIPT" <command> [args...]
 ```
 
+## Auto-Sync on Activation (MANDATORY)
+
+When this skill is activated, **immediately** launch a background agent (teams agent) to sync all stale or unknown favorites. Do NOT wait for the user to ask — this is automatic.
+
+```
+1. python3 "$CACHE_SCRIPT" sync needed       → check which favorites need syncing
+2. If ANY favorites show freshness "unknown" or "stale":
+   → Launch a background teams agent to sync ALL of them
+   → For each: fetch messages via MCP, then store with `messages store`
+   → Do NOT block the main conversation — use mode: "background"
+3. If all favorites are "fresh" → skip, no sync needed
+```
+
+This ensures cached messages are always available for fast lookups without the user having to request it.
+
 ## Cache-First Workflow
 
 Execute this pattern before EVERY Teams MCP tool call:
@@ -111,15 +126,8 @@ Favorites are chats and channels you want messages automatically cached for.
 
 - Add with `favorites add "Label" --type=chat` (or `--type=channel`)
 - Last 10 days of messages are stored; older messages are auto-cleaned
-- Run `sync needed` at session start to find stale favorites
+- Stale favorites are auto-synced when the skill activates (see Auto-Sync above)
 - Refresh stale entries by fetching via MCP tools and piping to `messages store`
-
-Workflow at session start:
-
-```
-1. python3 "$CACHE_SCRIPT" sync needed       → list of stale favorites
-2. For each stale entry: fetch fresh messages via MCP → store
-```
 
 ## Background Agent Patterns
 

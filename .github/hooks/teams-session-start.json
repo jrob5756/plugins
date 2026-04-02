@@ -11,10 +11,6 @@
         "type": "command",
         "bash": "SCRIPT=$(find ~/src -path '*/plugins/teams/scripts/teams_cache.py' -maxdepth 6 2>/dev/null | head -1) && python3 \"$SCRIPT\" sync needed 2>/dev/null || true",
         "timeoutSec": 15
-      },
-      {
-        "type": "command",
-        "bash": "echo 'AUTO-SYNC: Immediately use the teams agent in the background to sync ALL favorites listed above that have freshness unknown or stale. For each: fetch messages via MCP, then store with messages store. Do NOT wait for user input — sync automatically.'"
       }
     ]
   }
