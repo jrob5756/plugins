@@ -5,7 +5,7 @@
   },
   "metadata": {
     "description": "Plugin marketplace for Claude Code and VS Code Copilot — web research, browser automation, Microsoft tools, Azure DevOps, git workflows, Teams messaging, and PR review",
-    "version": "2.6.0"
+    "version": "2.7.0"
   },
   "plugins": [
     {
@@ -31,7 +31,7 @@
       "name": "git-tools",
       "source": "./plugins/git-tools",
       "description": "Git workflow commands and GitHub CLI reference skill",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "skills": ["./skills/gh-cli", "./skills/git-workflow"]
     },
     {
@@ -51,7 +51,7 @@
       "name": "teams",
       "source": "./plugins/teams",
       "description": "Microsoft Teams efficiency plugin with SQLite-backed caching for user IDs, chat IDs, team/channel IDs, and messages",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "skills": ["./skills/teams-cache"]
     },
     {
