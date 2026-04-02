@@ -1,13 +1,21 @@
 {
   "name": "teams",
-  "description": "Microsoft Teams efficiency plugin with local caching for user IDs, chat IDs, team/channel IDs, and recent messages",
-  "version": "1.0.0",
+  "description": "Microsoft Teams efficiency plugin with SQLite-backed caching for user IDs, chat IDs, team/channel IDs, and messages",
+  "version": "2.0.0",
   "author": {
     "name": "Jason"
   },
   "repository": "https://github.com/jrob5756/claude-plugins",
   "license": "MIT",
-  "keywords": ["teams", "microsoft-teams", "chat", "messaging", "cache", "efficiency"],
+  "keywords": ["teams", "microsoft-teams", "chat", "messaging", "cache", "sqlite", "efficiency"],
   "agents": ["./agents/teams.md"],
-  "skills": ["./skills/teams-cache"]
+  "skills": ["./skills/teams-cache"],
+  "hooks": {
+    "SessionStart": [{
+      "hooks": [{
+        "type": "command",
+        "command": "python3 \"$(find ~/src -path '*/plugins/teams/scripts/teams_cache.py' -maxdepth 6 2>/dev/null | head -1)\" init 2>/dev/null || true"
+      }]
+    }]
+  }
 }

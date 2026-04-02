@@ -5,7 +5,7 @@
   },
   "metadata": {
     "description": "Plugin marketplace for Claude Code and VS Code Copilot — web research, browser automation, Microsoft tools, Azure DevOps, git workflows, Teams messaging, and PR review",
-    "version": "2.5.0"
+    "version": "2.6.0"
   },
   "plugins": [
     {
@@ -50,8 +50,8 @@
     {
       "name": "teams",
       "source": "./plugins/teams",
-      "description": "Microsoft Teams efficiency plugin with local caching for user IDs, chat IDs, and team/channel IDs",
-      "version": "1.0.0",
+      "description": "Microsoft Teams efficiency plugin with SQLite-backed caching for user IDs, chat IDs, team/channel IDs, and messages",
+      "version": "2.0.0",
       "skills": ["./skills/teams-cache"]
     },
     {

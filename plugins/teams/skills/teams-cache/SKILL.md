@@ -1,315 +1,193 @@
 ---
 name: teams-cache
 description: |
-  Teams MCP efficiency layer with local caching of user UPNs, chat IDs, team IDs,
-  channel IDs, and recent messages. ALWAYS use this skill for ANY operation involving
-  Teams MCP tools — including sending messages, reading messages, listing chats,
-  posting to channels, or looking up users. This skill MUST be activated before
-  calling ANY Teams MCP tool (ListChats, PostMessage, ListChatMessages, ListTeams,
-  ListChannels, PostChannelMessage, ListChannelMessages, SendMessageToSelf,
-  SearchTeamsMessages, CreateChat, etc.). Triggers: send message, read message,
-  message someone, chat with, reply to, latest message, post to channel, teams,
-  send teams message, check teams, teams chat, read teams messages, post to teams,
-  teams channel, teams lookup, find teams chat, teams user, who is on teams,
-  list teams chats, teams group, teams meeting. Always invoke this skill first
-  to check the local cache and avoid redundant API lookups.
+  Teams MCP efficiency layer with SQLite-backed caching of user UPNs, chat IDs, team IDs,
+  channel IDs, and messages. Provides a Python CLI for instant lookups and cache management.
+  ALWAYS use this skill for ANY Teams operation — sending messages, reading chats, posting
+  to channels, looking up users. This skill MUST be activated before calling ANY Teams MCP
+  tool. Triggers: send message, read message, message someone, chat with, reply to, post
+  to channel, teams, teams chat, teams lookup, teams user, list teams chats, teams channel,
+  teams meeting, sync favorites, teams cache. Always invoke first to check the local cache
+  and avoid redundant API lookups.
 ---
 
 # Teams Cache — Efficient Teams MCP Usage
 
-Every Teams MCP operation requires identifiers (user UPNs, chat IDs, team IDs, channel IDs) that are expensive to look up via API. This skill provides a local cache layer that eliminates redundant lookups.
+SQLite-backed cache at `~/.local/share/teams-mcp-cache/teams-cache.db` that stores user UPNs, chat IDs, team/channel IDs, and recent messages. Managed entirely through the `teams_cache.py` CLI — never read or write the database directly.
 
-## Cache Location
+## Script Location
 
+```bash
+# Set this once per session — all examples below use $CACHE_SCRIPT
+CACHE_SCRIPT="plugins/teams/scripts/teams_cache.py"
 ```
-~/.local/share/teams-mcp-cache/
-├── me.json              # Current user identity
-├── users.json           # Display name → UPN + userId mapping
-├── chats.json           # Chat label → chatId + type + members
-├── teams.json           # Team name → teamId + channels
-└── messages/            # Recent messages per chat or channel
-    └── {safe-id}.json   # safe-id: chat ID or channel ID with :@/ replaced by _
+
+Resolve the full path relative to the workspace root. All commands follow the pattern:
+
+```bash
+python3 "$CACHE_SCRIPT" <command> [args...]
 ```
 
 ## Cache-First Workflow
 
-**Before ANY Teams MCP tool call that requires an identifier:**
-
-### Step 1: Read the cache
-
-```bash
-cat ~/.local/share/teams-mcp-cache/users.json   # For user lookups
-cat ~/.local/share/teams-mcp-cache/chats.json    # For chat lookups
-cat ~/.local/share/teams-mcp-cache/teams.json    # For team/channel lookups
-```
-
-### Step 2: Look up the identifier
-
-Search by display name (case-insensitive, partial match OK):
-- User name → get `upn` and `userId`
-- Chat label → get `chatId`
-- Team name → get `teamId`
-- Channel name → get `channelId` from team's `channels` array
-
-### Step 3: Use or fetch
-
-- **Cache hit** → Use the cached identifier directly. Skip the API call entirely.
-- **Cache miss** → Make the API call, then proceed to Step 4.
-
-### Step 4: Update the cache (on miss only)
-
-After any API call that returns new data, update the cache file:
-
-```python
-import json, os
-
-def update_cache(filename, key, value):
-    path = os.path.expanduser(f'~/.local/share/teams-mcp-cache/{filename}')
-    with open(path) as f:
-        cache = json.load(f)
-    cache[key] = value
-    with open(path, 'w') as f:
-        json.dump(cache, f, indent=2)
-```
-
-## Identifier Lookup Patterns
-
-### Finding a User UPN
+Execute this pattern before EVERY Teams MCP tool call:
 
 ```
-1. Read ~/.local/share/teams-mcp-cache/users.json
-2. Search for display name (case-insensitive substring match)
-3. Found? → Return {upn, userId}
-4. Not found? → Use the cache miss resolution steps below → Add to users.json
+1. python3 "$CACHE_SCRIPT" lookup <type> <name>
+2. HIT  → use returned identifiers directly in the MCP call
+3. MISS → call the Teams MCP API → then:
+   python3 "$CACHE_SCRIPT" upsert <type> <name> --upn=... --user-id=...
 ```
 
-#### User cache miss resolution/
+Never skip step 1. Never call a Teams MCP tool without checking the cache first.
 
-When a user is not in the cache, resolve their identity using these methods in priority order:
+## Quick Command Reference
+
+| Task | Command |
+|------|---------|
+| Find a user | `python3 "$CACHE_SCRIPT" lookup user "Lucio"` |
+| Find a chat | `python3 "$CACHE_SCRIPT" lookup chat "Lucio"` |
+| Find a team | `python3 "$CACHE_SCRIPT" lookup team "SoftwareEE"` |
+| Find a channel | `python3 "$CACHE_SCRIPT" lookup channel "SoftwareEE" "General"` |
+| Get my identity | `python3 "$CACHE_SCRIPT" lookup me` |
+| Cache a new user | `python3 "$CACHE_SCRIPT" upsert user "Name" --upn=user@domain.com --user-id=GUID` |
+| Cache a new chat | `python3 "$CACHE_SCRIPT" upsert chat "Label" --chat-id=19:...@thread.v2 --type=oneOnOne --members='["A","B"]'` |
+| Add favorite | `python3 "$CACHE_SCRIPT" favorites add "Label" --type=chat` |
+| List favorites | `python3 "$CACHE_SCRIPT" favorites list` |
+| Get cached messages | `python3 "$CACHE_SCRIPT" messages get "Label" --limit=20` |
+| Store messages | `echo '<json>' \| python3 "$CACHE_SCRIPT" messages store "Label" --stdin` |
+| Check what needs sync | `python3 "$CACHE_SCRIPT" sync needed` |
+| Clean HTML | `echo '<html>' \| python3 "$CACHE_SCRIPT" util clean-html --stdin` |
+| Cache stats | `python3 "$CACHE_SCRIPT" stats` |
+
+## Common Operations
+
+### Send a message to someone
+
+```
+1. python3 "$CACHE_SCRIPT" lookup user "Lucio"        → get UPN
+2. python3 "$CACHE_SCRIPT" lookup chat "Lucio"         → get chatId
+3. PostMessage(chatId=..., content="Hello!")
+```
+
+If step 2 misses, call `ListChats` with the UPN from step 1, then upsert the chat.
+
+### Post to a channel
+
+```
+1. python3 "$CACHE_SCRIPT" lookup channel "SoftwareEE" "General"  → get teamId + channelId
+2. PostChannelMessage(teamId=..., channelId=..., content="Update")
+```
+
+If step 1 misses, call `ListTeams` → `ListChannels`, then upsert.
+
+### Read chat messages
+
+```
+1. python3 "$CACHE_SCRIPT" messages get "Lucio" --limit=20
+2. If fresh (returned results) → use them
+3. If stale or empty → python3 "$CACHE_SCRIPT" lookup chat "Lucio" → get chatId
+4. ListChatMessages(chatId=...) → pipe results to:
+   echo '<json>' | python3 "$CACHE_SCRIPT" messages store "Lucio" --stdin
+```
+
+### Read channel messages
+
+Same as chat messages, plus: always pipe body content through `util clean-html`.
+
+```
+1. python3 "$CACHE_SCRIPT" messages get "SoftwareEE/General" --limit=20
+2. If stale → fetch via ListChannelMessages → store → clean HTML before presenting
+3. echo "$body_html" | python3 "$CACHE_SCRIPT" util clean-html --stdin
+```
+
+## Favorites & Message Caching
+
+Favorites are chats and channels you want messages automatically cached for.
+
+- Add with `favorites add "Label" --type=chat` (or `--type=channel`)
+- Last 10 days of messages are stored; older messages are auto-cleaned
+- Run `sync needed` at session start to find stale favorites
+- Refresh stale entries by fetching via MCP tools and piping to `messages store`
+
+Workflow at session start:
+
+```
+1. python3 "$CACHE_SCRIPT" sync needed       → list of stale favorites
+2. For each stale entry: fetch fresh messages via MCP → store
+```
+
+## Background Agent Patterns
+
+Use background agents for non-blocking cache operations:
+
+- **Session-start**: init cache + sync stale favorites in a background agent
+- **Parallel lookups**: launch multiple `lookup` calls simultaneously for batch operations
+- **Non-blocking refresh**: return cached data immediately, refresh in background
+
+→ See `references/background-agents.md` for detailed orchestration patterns.
+
+## User Cache Miss Resolution
+
+When `lookup user` returns no result, resolve in this priority order:
 
 **Method 1: SearchTeamMessagesQueryParameters (preferred)**
-Search for messages from the user — this returns their display name, email/UPN, and chatId in one call:
+
 ```
 queryString: "from:FirstName LastName"
 size: 3
 ```
+
 Extract from the response:
 - `from.emailAddress.name` → display name
-- `from.emailAddress.address` → UPN (email)
-- `chatId` → chat ID (also update chats.json)
+- `from.emailAddress.address` → UPN
+- `chatId` → chat ID
 
-This is the best method because it resolves the user, their UPN, AND the chat ID simultaneously.
+This resolves the user, their UPN, AND the chat ID in one call.
 
 **Method 2: SearchTeamsMessages (natural language fallback)**
-If the name is ambiguous or Method 1 returns no results:
+
 ```
 message: "messages from FirstName LastName"
 ```
-Parse the response for user identity details and chat context.
 
-**After resolving, always update BOTH caches:**
-```python
-# Add to users.json
-users["Display Name"] = {"upn": "user@domain.com", "userId": "guid"}
+Parse the response for user identity and chat context.
 
-# Add to chats.json (if a 1:1 chat was found)
-chats["Display Name"] = {
-    "chatId": "19:...@unq.gbl.spaces",
-    "type": "oneOnOne",
-    "members": ["Jason Robert", "Display Name"]
-}
-```
-
-### Finding a Chat ID
-
-```
-1. Read ~/.local/share/teams-mcp-cache/chats.json
-2. Search by label (person name for 1:1, topic for groups)
-3. Found? → Return chatId
-4. Not found? → First resolve the user UPN (see above), then call ListChats
-   with user UPN filter → Add to chats.json
-```
-
-### Finding a Team / Channel ID
-
-```
-1. Read ~/.local/share/teams-mcp-cache/teams.json
-2. Search by team name → get teamId
-3. Search team's channels array by channel name → get channelId
-4. Not found? → Call ListTeams / ListChannels → Add to teams.json
-```
-
-## Reading Channel Messages
-
-Channel messages require special handling — they have a different response structure than chat messages and their bodies are always HTML.
-
-### Channel message response structure
-
-```
-from.displayName   — sender name (flat, NOT nested under from.user)
-from.id            — sender user ID
-subject            — often empty; do NOT rely on this for matching
-body.contentType   — always "Html"
-body.content       — raw HTML; MUST be cleaned before presenting
-createdDateTime    — ISO timestamp
-```
-
-### Finding a specific channel message
-
-```
-1. Read ~/.local/share/teams-mcp-cache/teams.json
-2. Resolve teamId + channelId by name
-3. Call ListChannelMessages with teamId + channelId
-4. Match by from.displayName (sender), createdDateTime (date), or body content keywords
-5. Clean HTML from body.content before presenting
-6. Cache discovered messages and new users
-```
-
-### Reading thread replies
-
-`ListChannelMessages` only returns **top-level posts**. To read threaded replies under a post, run the fetch-replies Python script defined in the agent instructions. The script:
-
-1. Gets a Graph API token via `az account get-access-token`
-2. Calls `GET /teams/{teamId}/channels/{channelId}/messages/{messageId}/replies`
-3. Cleans HTML from each reply body
-4. Prints formatted results
-
-```
-1. Read ~/.local/share/teams-mcp-cache/teams.json
-2. Resolve teamId + channelId by name
-3. Call ListChannelMessages to find the parent post (match by sender/date/keywords)
-4. Run the fetch-replies Python heredoc with teamId, channelId, messageId
-5. Clean HTML from reply bodies
-6. Cache discovered users from reply senders
-```
-
-### HTML Cleanup (REQUIRED for channel messages)
-
-Channel message bodies are raw HTML. Always clean before presenting.
-
-Use a heredoc to avoid shell escaping issues:
+**After resolving, always upsert BOTH user and chat:**
 
 ```bash
-python3 << 'PYEOF'
-import json, html, re
-
-def clean_html(raw):
-    text = re.sub(r'<br\s*/?>', '\n', raw)
-    text = re.sub(r'<li[^>]*>', '- ', text)
-    text = re.sub(r'</li>', '\n', text)
-    text = re.sub(r'<h[12][^>]*>', '\n## ', text)
-    text = re.sub(r'</h[12]>', '\n', text)
-    text = re.sub(r'<h[34][^>]*>', '\n### ', text)
-    text = re.sub(r'</h[34]>', '\n', text)
-    text = re.sub(r'<codeblock[^>]*><code>', '\n```\n', text)
-    text = re.sub(r'</code></codeblock>', '\n```\n', text)
-    text = re.sub(r'<p[^>]*>', '', text)
-    text = re.sub(r'</p>', '\n', text)
-    text = re.sub(r'<[^>]+>', '', text)
-    text = html.unescape(text)
-    text = re.sub(r'\n{3,}', '\n\n', text)
-    return text.strip()
-PYEOF
+python3 "$CACHE_SCRIPT" upsert user "Display Name" --upn=user@domain.com --user-id=GUID
+python3 "$CACHE_SCRIPT" upsert chat "Display Name" --chat-id=19:...@thread.v2 --type=oneOnOne --members='["Me","Display Name"]'
 ```
 
-**Key rules:**
-- Always use a heredoc (`<< 'PYEOF'`) — inline `python3 -c` breaks on complex regexes
-- Strip HTML BEFORE presenting any channel message content
-- Preserve code blocks, headers, and list structure when converting
+## Channel Messages
 
-## Message Caching
+Channel messages differ from chat messages in critical ways:
 
-After reading messages from a chat or channel, cache them locally:
+- **Always HTML** — pipe every channel message body through `util clean-html` before presenting
+- **Flat sender structure** — use `from.displayName` (not `from.user.displayName`)
+- **`body.contentType`** — always `"Html"`, never `"Text"`
+- **Thread replies** — `ListChannelMessages` returns only top-level posts; use the Graph API fetch-replies script (defined in agent instructions) for threaded replies
 
-```
-~/.local/share/teams-mcp-cache/messages/{safe-id}.json
-```
-
-Where `safe-id` replaces `:`, `@`, and `/` with `_`. Works for both chat IDs and channel IDs.
-
-### Message cache format
-
-```json
-{
-  "chatId": "19:abc...@thread.v2",
-  "label": "Log Service Core Squad",
-  "lastFetched": "2026-03-19T14:00:00Z",
-  "messages": [
-    {
-      "id": "msg-id",
-      "sender": "Display Name",
-      "content": "Cleaned plaintext content",
-      "timestamp": "2026-03-19T13:45:00Z"
-    }
-  ]
-}
-```
-
-### When to use cached messages
-
-- If `lastFetched` is within the last 15 minutes → use cached messages
-- If older → fetch fresh messages and update cache
-- Always fetch fresh for "latest" or "new" message requests
+→ See `references/html-cleanup.md` for HTML-to-markdown conversion details.
 
 ## Performance Impact
 
 | Operation | Without Cache | With Cache |
 |-----------|--------------|------------|
-| Send message to "Lucio" | ListChats (2389 results) → find chat → PostMessage | Read users.json + chats.json → PostMessage |
-| Post to "General" channel | ListTeams → ListChannels → PostChannelMessage | Read teams.json → PostChannelMessage |
-| Read messages from "Eli" | ListChats → ListChatMessages | Read chats.json → ListChatMessages |
+| Send message to "Lucio" | ListChats (2000+ results) → scan → PostMessage | `lookup chat` → PostMessage |
+| Post to "General" channel | ListTeams → ListChannels → PostChannelMessage | `lookup channel` → PostChannelMessage |
+| Read messages from "Eli" | ListChats → find chat → ListChatMessages | `messages get` (instant, local) |
+| Resolve unknown user | ListChats + filter → scan members | `lookup user` → single search call on miss |
 
-The cache eliminates the expensive `ListChats` call (which returns 2000+ results) for every single operation.
+The cache eliminates the expensive `ListChats` call (2000+ results) from every operation.
 
-## Cache Maintenance
+## Reference Files
 
-### Refreshing stale data
+Load these only when needed — do not read on every activation.
 
-The cache is populated on first use and updated on cache misses. For a full refresh:
-
-```bash
-# Delete and rebuild (agent will repopulate on next use)
-rm ~/.local/share/teams-mcp-cache/users.json
-rm ~/.local/share/teams-mcp-cache/chats.json
-rm ~/.local/share/teams-mcp-cache/teams.json
-```
-
-### Adding new contacts
-
-When the agent discovers a new user through any API call, it should automatically add them to `users.json`. This includes users found in:
-- Chat member lists
-- Channel member lists
-- Meeting participants
-- Message senders
-
-## Integration with Teams MCP Tools
-
-This skill works with ALL Teams MCP tools:
-
-| Tool | Cache benefit |
-|------|--------------|
-| `ListChats` | Cache result → never call again for same user |
-| `PostMessage` | Cache provides chatId → skip ListChats |
-| `ListChatMessages` | Cache provides chatId + message history |
-| `ListTeams` | Cache provides teamId → skip for known teams |
-| `ListChannels` | Cache provides channelId → skip for known channels |
-| `PostChannelMessage` | Cache provides teamId + channelId |
-| `ListChannelMessages` | Cache provides teamId + channelId; cache messages + new users from results |
-| `ReplyToChannelMessage` | Cache provides teamId + channelId + messageId |
-| `SearchTeamsMessages` | Cache new users/chats from results |
-| `CreateChat` | Cache the new chat immediately |
-
-## Current User
-
-The current user's identity is cached in `me.json`:
-
-```json
-{
-  "displayName": "Jason Robert",
-  "upn": "jasonrobert@microsoft.com",
-  "userId": "2d969639-1bef-40b7-b9bf-d2de5419d32b",
-  "timezone": "Eastern Standard Time"
-}
-```
-
-Use this for any self-referencing operations (e.g., "my chats", "send to myself").
+| File | When to load |
+|------|-------------|
+| `references/cache-format.md` | Debugging the SQLite schema or writing direct queries |
+| `references/background-agents.md` | Orchestrating parallel or background cache operations |
+| `references/html-cleanup.md` | Processing channel messages with HTML bodies |
