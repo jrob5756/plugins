@@ -1,7 +1,7 @@
 {
   "name": "playwright",
   "description": "Browser automation specialist agent using Playwright MCP for web interactions",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "author": {
     "name": "Jason"
   },

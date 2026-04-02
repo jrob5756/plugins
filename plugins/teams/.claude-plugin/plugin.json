@@ -1,7 +1,7 @@
 {
   "name": "teams",
   "description": "Microsoft Teams efficiency plugin with SQLite-backed caching for user IDs, chat IDs, team/channel IDs, and messages",
-  "version": "2.4.4",
+  "version": "2.4.5",
   "author": {
     "name": "Jason"
   },
