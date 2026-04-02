@@ -5,21 +5,21 @@
   },
   "metadata": {
     "description": "Plugin marketplace for Claude Code and VS Code Copilot — web research, browser automation, Microsoft tools, Azure DevOps, git workflows, Teams messaging, and PR review",
-    "version": "2.7.1"
+    "version": "2.8.0"
   },
   "plugins": [
     {
       "name": "web",
       "source": "./plugins/web",
       "description": "Web research agent with search MCP servers",
-      "version": "1.1.0",
+      "version": "1.1.2",
       "skills": ["./skills/web-research"]
     },
     {
       "name": "playwright",
       "source": "./plugins/playwright",
       "description": "Browser automation agent with Playwright MCP server",
-      "version": "1.0.3"
+      "version": "1.0.5"
     },
     {
       "name": "ms-tools",
@@ -51,7 +51,7 @@
       "name": "teams",
       "source": "./plugins/teams",
       "description": "Microsoft Teams efficiency plugin with SQLite-backed caching for user IDs, chat IDs, team/channel IDs, and messages",
-      "version": "2.3.0",
+      "version": "2.4.0",
       "skills": ["./skills/teams-cache"]
     },
     {

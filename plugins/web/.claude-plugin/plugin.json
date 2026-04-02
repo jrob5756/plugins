@@ -1,7 +1,7 @@
 {
   "name": "web",
   "description": "Web research specialist agent with search and deep research skills",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "author": {
     "name": "Jason"
   },
@@ -10,17 +10,5 @@
   "keywords": ["web-search", "research", "documentation"],
   "agents": ["./agents/web-searcher.md"],
   "skills": ["./skills/web-research"],
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo 'IMPORTANT: Always use the web-searcher:web-searcher subagent (via Task tool) for web research. Never call web-search or ms-learn MCP tools directly, even for medium to complex queries.'",
-            "bash": "echo 'IMPORTANT: Always use the web-searcher:web-searcher subagent (via Task tool) for web research. Never call web-search or ms-learn MCP tools directly, even for medium to complex queries.'"
-          }
-        ]
-      }
-    ]
-  }
+  "hooks": "hooks/hooks.json"
 }
