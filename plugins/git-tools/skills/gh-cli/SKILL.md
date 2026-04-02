@@ -2,6 +2,7 @@
 name: gh-cli
 description: |
   GitHub interactions using the GH CLI. Triggers: create issue, list PRs, open pull request, merge PR, view repo, clone repository, check workflow, run actions, create release, search issues, review PR, gh command, GitHub API, repo settings, create gist, list releases, check CI status, switch GitHub account. More generally anything with GitHub should use this skill.
+user-invocable: false
 ---
 
 # GitHub CLI

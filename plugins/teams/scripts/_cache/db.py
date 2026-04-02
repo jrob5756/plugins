@@ -115,8 +115,15 @@ def utcnow() -> str:
     return datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def freshness_label(last_fetched: str | None):
-    """Return (label, age_minutes) from an ISO timestamp."""
+def freshness_label(last_fetched: str | None, fresh_minutes: int = 5):
+    """Return (label, age_minutes) from an ISO timestamp.
+
+    Thresholds:
+      < fresh_minutes  → "fresh"  (default 5 min)
+      < 60 min         → "stale"
+      >= 60 min        → "expired"
+      None             → "unknown"
+    """
     if not last_fetched:
         return "unknown", None
     try:
@@ -129,7 +136,7 @@ def freshness_label(last_fetched: str | None):
             return "unknown", None
     now = datetime.datetime.now(datetime.timezone.utc)
     age = (now - dt).total_seconds() / 60.0
-    if age < 15:
+    if age < fresh_minutes:
         return "fresh", round(age, 1)
     if age < 60:
         return "stale", round(age, 1)

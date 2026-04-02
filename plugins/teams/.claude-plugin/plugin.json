@@ -15,6 +15,10 @@
       "hooks": [{
         "type": "command",
         "command": "python3 \"$(find ~/src -path '*/plugins/teams/scripts/teams_cache.py' -maxdepth 6 2>/dev/null | head -1)\" init 2>/dev/null || true"
+      },
+      {
+        "type": "command",
+        "command": "echo 'IMPORTANT: Teams cache initialized. Run sync on favorites: use the teams agent to check `python3 teams_cache.py sync needed` and refresh any stale favorites in the background before handling the user request.'"
       }]
     }]
   }

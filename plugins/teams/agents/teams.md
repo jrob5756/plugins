@@ -28,6 +28,15 @@ Before EVERY Teams operation that requires an identifier (user UPN, chat ID, tea
 3. **If MISS** → call the Teams MCP API to resolve
 4. `python3 "$CACHE_SCRIPT" upsert <type> <name> --args...` — cache the result
 
+## ALWAYS Cache After Fetching (MANDATORY)
+
+After ANY Teams MCP call that returns messages, users, or chat data, you MUST cache the results immediately:
+
+- **After ListChatMessages / ListChannelMessages**: Build a JSON array of messages and pipe to `python3 "$CACHE_SCRIPT" messages store "<label>" --stdin`
+- **After any API call returning user info**: Run `python3 "$CACHE_SCRIPT" upsert user "<name>" --upn=... --user-id=...`
+- **After any API call returning chat info**: Run `python3 "$CACHE_SCRIPT" upsert chat "<label>" --chat-id=... --type=... --members='[...]'`
+- **Never skip caching** — even if the user only asked for a single message, cache the full result set
+
 ## Common Operations
 
 ### Send a message to someone
@@ -41,9 +50,11 @@ Before EVERY Teams operation that requires an identifier (user UPN, chat ID, tea
 2. `PostMessage` with chatId — supports HTML content type for rich formatting
 
 ### Read recent messages
-1. `python3 "$CACHE_SCRIPT" messages freshness "Label"` → check staleness
-2. If fresh → `python3 "$CACHE_SCRIPT" messages get "Label"` → return cached
-3. If stale/expired → `ListChatMessages` → pipe to `python3 "$CACHE_SCRIPT" messages store "Label" --stdin` → return fresh data
+1. **Keyword check**: If the user says "latest", "new", "just got", "recent", "unread", or "just received" → SKIP the cache, always fetch live
+2. `python3 "$CACHE_SCRIPT" messages freshness "Label"` → check staleness (fresh = <5 min)
+3. If fresh → `python3 "$CACHE_SCRIPT" messages get "Label"` → return cached
+4. If stale/expired/unknown → `ListChatMessages` → **immediately** build JSON array and pipe to `python3 "$CACHE_SCRIPT" messages store "Label" --stdin` → then return the data
+5. The JSON array for `messages store` must be: `[{"id":"...","sender":"...","content":"...","timestamp":"..."}]`
 
 ### Post to a team channel
 1. `python3 "$CACHE_SCRIPT" lookup channel "SoftwareEE" "General"` → get teamId + channelId
@@ -110,7 +121,14 @@ PYEOF
 
 ## Background Agent Patterns
 
-- **Session start**: Run `python3 "$CACHE_SCRIPT" init` then `python3 "$CACHE_SCRIPT" sync needed` → for each stale favorite, launch a background agent to fetch and cache
+### Session-start sync (triggered by SessionStart hook message)
+When you see the session start message about syncing favorites:
+1. Run `python3 "$CACHE_SCRIPT" sync needed` to get stale/unknown favorites
+2. For each one, fetch messages via the appropriate MCP tool (ListChatMessages for chats, ListChannelMessages for channels)
+3. Cache results via `python3 "$CACHE_SCRIPT" messages store "<label>" --stdin`
+4. Do this in the background — don't block the user's first request
+
+### Other patterns
 - **Parallel lookups**: For batch operations (e.g., sending to multiple people), resolve all identifiers via parallel background agents
 - **Non-blocking refresh**: Return cached data immediately, fire a background agent to refresh stale entries behind the scenes
 

@@ -9,6 +9,7 @@ description: |
   to channel, teams, teams chat, teams lookup, teams user, list teams chats, teams channel,
   teams meeting, sync favorites, teams cache. Always invoke first to check the local cache
   and avoid redundant API lookups.
+user-invocable: false
 ---
 
 # Teams Cache — Efficient Teams MCP Usage
@@ -84,12 +85,15 @@ If step 1 misses, call `ListTeams` → `ListChannels`, then upsert.
 ### Read chat messages
 
 ```
-1. python3 "$CACHE_SCRIPT" messages get "Lucio" --limit=20
-2. If fresh (returned results) → use them
-3. If stale or empty → python3 "$CACHE_SCRIPT" lookup chat "Lucio" → get chatId
-4. ListChatMessages(chatId=...) → pipe results to:
-   echo '<json>' | python3 "$CACHE_SCRIPT" messages store "Lucio" --stdin
+1. KEYWORD CHECK: If user says "latest", "new", "just got", "recent", "unread"
+   → SKIP cache, go directly to step 3
+2. python3 "$CACHE_SCRIPT" messages freshness "Lucio"   → check staleness (fresh = <5 min)
+   If fresh → python3 "$CACHE_SCRIPT" messages get "Lucio" --limit=20
+3. If stale/expired/unknown/keyword bypass → lookup chat → ListChatMessages →
+   IMMEDIATELY cache: echo '[...]' | python3 "$CACHE_SCRIPT" messages store "Lucio" --stdin
 ```
+
+**CRITICAL: ALWAYS cache messages after fetching them.** Never skip this step.
 
 ### Read channel messages
 
