@@ -203,3 +203,4 @@ Load these only when needed — do not read on every activation.
 | `references/cache-format.md` | Debugging the SQLite schema or writing direct queries |
 | `references/background-agents.md` | Orchestrating parallel or background cache operations |
 | `references/html-cleanup.md` | Processing channel messages with HTML bodies |
+| `references/writing-style.md` | Drafting or sending any message on behalf of the user |
