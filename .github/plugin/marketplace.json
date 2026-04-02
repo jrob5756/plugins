@@ -13,7 +13,9 @@
       "source": "./plugins/web",
       "description": "Web research agent with search MCP servers",
       "version": "1.1.2",
-      "skills": ["./skills/web-research"]
+      "skills": [
+        "./skills/web-research"
+      ]
     },
     {
       "name": "playwright",
@@ -32,7 +34,10 @@
       "source": "./plugins/git-tools",
       "description": "Git workflow commands and GitHub CLI reference skill",
       "version": "1.2.0",
-      "skills": ["./skills/gh-cli", "./skills/git-workflow"]
+      "skills": [
+        "./skills/gh-cli",
+        "./skills/git-workflow"
+      ]
     },
     {
       "name": "ado",
@@ -45,21 +50,27 @@
       "source": "./plugins/dependabot",
       "description": "Dependabot PR management — review, fix, and merge automation",
       "version": "1.0.0",
-      "skills": ["./skills/dependabot"]
+      "skills": [
+        "./skills/dependabot"
+      ]
     },
     {
       "name": "teams",
       "source": "./plugins/teams",
       "description": "Microsoft Teams efficiency plugin with SQLite-backed caching for user IDs, chat IDs, team/channel IDs, and messages",
-      "version": "2.4.0",
-      "skills": ["./skills/teams-cache"]
+      "version": "2.4.1",
+      "skills": [
+        "./skills/teams-cache"
+      ]
     },
     {
       "name": "pr-review-toolkit",
       "source": "./plugins/pr-review-toolkit",
       "description": "Comprehensive PR review agents for code quality, tests, comments, error handling, type design, and simplification",
       "version": "1.0.0",
-      "skills": ["./skills/pr-review"]
+      "skills": [
+        "./skills/pr-review"
+      ]
     }
   ]
 }

@@ -5,15 +5,18 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${PLUGIN_ROOT}/scripts/teams_cache.py\" init 2>/dev/null || true"
+            "command": "python3 \"${PLUGIN_ROOT}/scripts/teams_cache.py\" init 2>/dev/null || true",
+            "bash": "python3 \"${PLUGIN_ROOT}/scripts/teams_cache.py\" init 2>/dev/null || true"
           },
           {
             "type": "command",
-            "command": "python3 \"${PLUGIN_ROOT}/scripts/teams_cache.py\" sync needed 2>/dev/null || true"
+            "command": "python3 \"${PLUGIN_ROOT}/scripts/teams_cache.py\" sync needed 2>/dev/null || true",
+            "bash": "python3 \"${PLUGIN_ROOT}/scripts/teams_cache.py\" sync needed 2>/dev/null || true"
           },
           {
             "type": "command",
-            "command": "echo 'AUTO-SYNC: Immediately use the teams agent in the background to sync ALL favorites listed above that have freshness unknown or stale. For each: fetch messages via MCP, then store with messages store. Do NOT wait for user input — sync automatically.'"
+            "command": "echo 'AUTO-SYNC: Immediately use the teams agent in the background to sync ALL favorites listed above that have freshness unknown or stale. For each: fetch messages via MCP, then store with messages store. Do NOT wait for user input — sync automatically.'",
+            "bash": "echo 'AUTO-SYNC: Immediately use the teams agent in the background to sync ALL favorites listed above that have freshness unknown or stale. For each: fetch messages via MCP, then store with messages store. Do NOT wait for user input — sync automatically.'"
           }
         ]
       }
