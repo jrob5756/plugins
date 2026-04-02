@@ -53,7 +53,8 @@ After creating the plugin directory and files, you **MUST** also:
 ## When Modifying an Existing Plugin
 
 - Bump the `version` in that plugin's `.claude-plugin/plugin.json`
-- If the change is significant, bump `marketplace.json` version too
+- **Update the plugin's `version` in both `.claude-plugin/marketplace.json` AND `.github/plugin/marketplace.json`** to match
+- If the change is significant, bump the marketplace `metadata.version` too
 
 ## Agent Markdown Format
 
