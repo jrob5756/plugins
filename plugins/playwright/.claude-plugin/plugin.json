@@ -1,13 +1,20 @@
 {
   "name": "playwright",
   "description": "Browser automation specialist agent using Playwright MCP for web interactions",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "author": {
     "name": "Jason"
   },
   "repository": "https://github.com/jrob5756/claude-plugins",
   "license": "MIT",
-  "keywords": ["playwright", "browser-automation", "web-scraping", "testing"],
-  "agents": ["./agents/playwright.md"],
+  "keywords": [
+    "playwright",
+    "browser-automation",
+    "web-scraping",
+    "testing"
+  ],
+  "agents": [
+    "./agents/playwright.md"
+  ],
   "hooks": "hooks/hooks.json"
 }

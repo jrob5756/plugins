@@ -5,7 +5,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo 'IMPORTANT: Always use the playwright:playwright subagent (via Task tool) for ALL browser automation. Never call playwright MCP tools directly, even for simple tasks.'"
+            "command": "echo 'IMPORTANT: Always use the playwright:playwright subagent (via Task tool) for ALL browser automation. Never call playwright MCP tools directly, even for simple tasks.'",
+            "bash": "echo 'IMPORTANT: Always use the playwright:playwright subagent (via Task tool) for ALL browser automation. Never call playwright MCP tools directly, even for simple tasks.'"
           }
         ]
       }

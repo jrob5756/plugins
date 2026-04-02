@@ -1,14 +1,22 @@
 {
   "name": "web",
   "description": "Web research specialist agent with search and deep research skills",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "author": {
     "name": "Jason"
   },
   "repository": "https://github.com/jrob5756/claude-plugins",
   "license": "MIT",
-  "keywords": ["web-search", "research", "documentation"],
-  "agents": ["./agents/web-searcher.md"],
-  "skills": ["./skills/web-research"],
+  "keywords": [
+    "web-search",
+    "research",
+    "documentation"
+  ],
+  "agents": [
+    "./agents/web-searcher.md"
+  ],
+  "skills": [
+    "./skills/web-research"
+  ],
   "hooks": "hooks/hooks.json"
 }
