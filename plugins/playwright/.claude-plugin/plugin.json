@@ -1,7 +1,7 @@
 {
   "name": "playwright",
   "description": "Browser automation specialist agent using Playwright MCP for web interactions",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "author": {
     "name": "Jason"
   },
@@ -15,7 +15,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo 'IMPORTANT: Always use the playwright:playwright subagent (via Task tool) for ALL browser automation. Never call playwright MCP tools directly, even for simple tasks.'"
+            "command": "echo 'IMPORTANT: Always use the playwright:playwright subagent (via Task tool) for ALL browser automation. Never call playwright MCP tools directly, even for simple tasks.'",
+            "bash": "echo 'IMPORTANT: Always use the playwright:playwright subagent (via Task tool) for ALL browser automation. Never call playwright MCP tools directly, even for simple tasks.'"
           }
         ]
       }
