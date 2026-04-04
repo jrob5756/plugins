@@ -40,6 +40,7 @@ Each plugin defines its agent in `plugins/<name>/agents/<name>.md`:
 - [dependabot](./plugins/dependabot/) - Dependabot PR review, fix, and merge automation
 - [teams](./plugins/teams/agents/teams.md) - Microsoft Teams specialist with local cache for efficient messaging
 - [pr-review-toolkit](./plugins/pr-review-toolkit/) - Comprehensive PR review with specialized agents for code, tests, comments, errors, types, and simplification
+- [writing](./plugins/writing/) - Writing tools — humanize AI-generated text by detecting and removing common AI patterns
 
 ## When Adding a New Plugin
 

@@ -1,0 +1,12 @@
+{
+  "name": "writing",
+  "description": "Writing tools — humanize AI-generated text by detecting and removing common AI patterns",
+  "version": "2.5.1",
+  "author": {
+    "name": "Jason"
+  },
+  "repository": "https://github.com/jrob5756/claude-plugins",
+  "license": "MIT",
+  "keywords": ["writing", "humanizer", "ai-cleanup", "editing", "style"],
+  "skills": ["./skills/humanizer"]
+}
