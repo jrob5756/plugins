@@ -4,8 +4,8 @@
     "name": "Jason"
   },
   "metadata": {
-    "description": "Plugin marketplace for Claude Code and VS Code Copilot \u2014 web research, browser automation, Microsoft tools, Azure DevOps, git workflows, Teams messaging, PR review, and writing tools",
-    "version": "2.9.0"
+    "description": "Plugin marketplace for Claude Code and VS Code Copilot — web research, browser automation, Microsoft tools, Azure DevOps, git workflows, Teams messaging, PR review, writing tools, and Excalidraw diagramming",
+    "version": "2.10.0"
   },
   "plugins": [
     {
@@ -80,6 +80,12 @@
       "skills": [
         "./skills/humanizer"
       ]
+    },
+    {
+      "name": "excalidraw",
+      "source": "./plugins/excalidraw",
+      "description": "Excalidraw diagramming agent — hand-drawn style diagrams, architecture drawings, and visual explanations",
+      "version": "1.0.0"
     }
   ]
 }
